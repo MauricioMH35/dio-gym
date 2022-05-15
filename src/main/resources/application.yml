@@ -1,0 +1,18 @@
+
+# SPRING DATA JPA CONFIGURATIONS
+spring:
+  datasource:
+    driver: org.postgresql.Driver
+    initialization-mode: always
+    url: jdbc:postgresql://localhost:5432/db_dio_gym?useTimezone=true&serverTimezone=UTC&useLEgacyDate
+    username: dio_gym
+    password: dio_gym-486964616E69
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        format_sql: true
+    show-sql: true # false
+    hibernate:
+      ddl-auto: update
+

@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    container_name: db_dio_gym
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DATABASE: path
+      POSTGRES_ROOT_PASSWORD: root
+      POSTGRES_USER: dio_gym
+      POSTGRES_PASSWORD: dio_gym-486964616E69
+    volumes:
+      - ./dump:/docker-entrypoint-initdb.d
+
+# RUN DOCKER
+# docker stack deploy -c docker-compose.yml postgres
+# OR
+# docker-compose -f docker-compose.yml up
+#
+# init docker
+# bash> docker exec -it dio_gym bash
+# bash> postgres -u root -p root
+# OR bash> psql -U dio_gym
