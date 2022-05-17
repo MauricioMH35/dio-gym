@@ -21,7 +21,7 @@ public class Assessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")
     private Student student;
 
@@ -37,7 +37,7 @@ public class Assessment {
     public AssessmentDTO parse() {
         return AssessmentDTO.builder()
                 .id(this.id)
-                .student(this.student.parse())
+                .student(this.student)
                 .evaluationDate(parseEvaluationDate())
                 .weight(this.weight)
                 .height(this.height)
@@ -47,7 +47,7 @@ public class Assessment {
     public static AssessmentDTO parse(Assessment target) {
         return AssessmentDTO.builder()
                 .id(target.id)
-                .student(target.student.parse())
+                .student(target.student)
                 .evaluationDate(parseEvaluationDate(target.getEvaluationDate()))
                 .weight(target.weight)
                 .height(target.height)

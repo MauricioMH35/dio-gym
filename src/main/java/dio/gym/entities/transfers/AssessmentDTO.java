@@ -2,6 +2,7 @@ package dio.gym.entities.transfers;
 
 import dio.gym.entities.Assessment;
 import dio.gym.entities.Student;
+import dio.gym.utils.StringToLocalDate;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -20,7 +21,7 @@ import java.util.Date;
 public class AssessmentDTO {
 
     private Long id;
-    private StudentDTO student;
+    private Student student;
     private String evaluationDate;
     private Double weight;
     private Double height;
@@ -28,8 +29,8 @@ public class AssessmentDTO {
     public Assessment parse() {
         return Assessment.builder()
                 .id(this.id)
-                .student(this.student.parse())
-                .evaluationDate(parseEvaluationDate())
+                .student(this.student)
+                .evaluationDate(StringToLocalDate.parse(this.evaluationDate))
                 .weight(this.weight)
                 .height(this.height)
                 .build();
@@ -38,21 +39,11 @@ public class AssessmentDTO {
     public static Assessment parse(AssessmentDTO target) {
         return Assessment.builder()
                 .id(target.id)
-                .student(target.student.parse())
-                .evaluationDate(parseEvaluationDate(target.getEvaluationDate()))
+                .student(target.student)
+                .evaluationDate(StringToLocalDate.parse(target.evaluationDate))
                 .weight(target.weight)
                 .height(target.height)
                 .build();
-    }
-
-    private LocalDate parseEvaluationDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(this.evaluationDate, formatter);
-    }
-
-    private static LocalDate parseEvaluationDate(String target) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(target, formatter);
     }
 
 }

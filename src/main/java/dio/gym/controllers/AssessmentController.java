@@ -32,7 +32,7 @@ public class AssessmentController {
     }
 
     @GetMapping("/evaluation")
-    public ResponseEntity<Page<AssessmentDTO>> findByEvaluationDate(@RequestParam String evaluationData) {
+    public ResponseEntity<Page<AssessmentDTO>> findByEvaluationDate(@RequestParam("evaluation") String evaluationData) {
         return new ResponseEntity(
                 service.findByEvaluationDate(evaluationData), HttpStatus.OK
         );
@@ -56,9 +56,9 @@ public class AssessmentController {
     }
 
     @GetMapping("/weight/between")
-    public ResponseEntity<Page<AssessmentDTO>> findByWeightBetween(@RequestParam Map<String, Double> weights) {
-        Double start = weights.get("start");
-        Double end = weights.get("end");
+    public ResponseEntity<Page<AssessmentDTO>> findByWeightBetween(@RequestParam Map<String, String> weights) {
+        Double start = Double.parseDouble(weights.get("start"));
+        Double end = Double.parseDouble(weights.get("end"));
 
         return new ResponseEntity(
                 service.findByWeightBetween(start, end), HttpStatus.OK
@@ -73,9 +73,10 @@ public class AssessmentController {
     }
 
     @GetMapping("/height/beteween")
-    public ResponseEntity<Page<AssessmentDTO>> findByHeightBetween(@RequestParam Map<String, Double> heights) {
-        Double start = heights.get("start");
-        Double end = heights.get("end");
+    public ResponseEntity<Page<AssessmentDTO>> findByHeightBetween(@RequestParam Map<String, String> heights) {
+        Double start = Double.parseDouble(heights.get("start"));
+        Double end = Double.parseDouble(heights.get("end"));
+
         return new ResponseEntity(
                 service.findByHeightBetween(start, end), HttpStatus.OK
         );
@@ -101,4 +102,5 @@ public class AssessmentController {
                 service.deleteById(id), HttpStatus.NO_CONTENT
         );
     }
+
 }

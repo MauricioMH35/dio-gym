@@ -1,7 +1,12 @@
 package dio.gym.services.impls;
 
+import dio.gym.entities.Assessment;
+import dio.gym.entities.Student;
 import dio.gym.entities.transfers.AssessmentDTO;
+import dio.gym.handlers.NotFoundException;
+import dio.gym.handlers.UnathorazedException;
 import dio.gym.repositories.IAssessmentRepository;
+import dio.gym.repositories.IStudentRepository;
 import dio.gym.services.IAssessmentService;
 import dio.gym.utils.StringToLocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +23,17 @@ public class AssessmentService implements IAssessmentService {
     @Autowired
     private IAssessmentRepository repository;
 
+    @Autowired
+    private IStudentRepository studentRepository;
+
     @Override
     public AssessmentDTO create(AssessmentDTO assessment) {
         if (assessment == null) {
-            throw new RuntimeException("Error");
+            throw new UnathorazedException("Assessment the information has not been carried out");
         }
+        Student studentFound = studentRepository.findById(assessment.getStudent().getId())
+                .orElseThrow(() -> new NotFoundException("Student doesn't exists"));
+        assessment.setStudent(studentFound);
         repository.save(assessment.parse());
         return assessment;
     }
@@ -30,7 +41,7 @@ public class AssessmentService implements IAssessmentService {
     @Override
     public AssessmentDTO findById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not Found"))
+                .orElseThrow(() -> new NotFoundException("Assessment Not Found"))
                 .parse();
     }
 
@@ -41,7 +52,7 @@ public class AssessmentService implements IAssessmentService {
                 .map(a -> a.parse())
                 .collect(Collectors.toList()));
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -56,7 +67,7 @@ public class AssessmentService implements IAssessmentService {
                         .map(a -> a.parse())
                         .collect(Collectors.toList()));
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -69,7 +80,7 @@ public class AssessmentService implements IAssessmentService {
                         .collect(Collectors.toList()));
 
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -82,7 +93,7 @@ public class AssessmentService implements IAssessmentService {
                         .collect(Collectors.toList()));
 
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -95,7 +106,7 @@ public class AssessmentService implements IAssessmentService {
                         .collect(Collectors.toList()));
 
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -108,7 +119,7 @@ public class AssessmentService implements IAssessmentService {
                         .collect(Collectors.toList()));
 
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -121,7 +132,7 @@ public class AssessmentService implements IAssessmentService {
                         .collect(Collectors.toList()));
 
         if (found.isEmpty()) {
-            throw new RuntimeException("Not Found");
+            throw new NotFoundException("Assessment Not Found");
         }
         return found;
     }
@@ -129,7 +140,10 @@ public class AssessmentService implements IAssessmentService {
     @Override
     public String updateById(Long id, AssessmentDTO assessment) {
         repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not Found"));
+                .orElseThrow(() -> new NotFoundException("Assessment Not Found"));
+        Student studentFound = studentRepository.findById(assessment.getStudent().getId())
+                .orElseThrow(() -> new NotFoundException("Student doesn't exists"));
+        assessment.setStudent(studentFound);
         assessment.setId(id);
         repository.save(assessment.parse());
         return "Assessment successfully updated";
@@ -138,8 +152,9 @@ public class AssessmentService implements IAssessmentService {
     @Override
     public String deleteById(Long id) {
         repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nor Found"));
+                .orElseThrow(() -> new NotFoundException("Assessment Not Found"));
         repository.deleteById(id);
         return "Assessment successfully removed";
     }
+
 }
