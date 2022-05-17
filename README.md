@@ -29,11 +29,6 @@ E para rodar a aplicação após ter clonado o repositório e possuir o gradle i
 ### Método: CREATE [Criar Aluno/Estudante]
 ```
 http://127.0.0.1:8080/v1/api/students
-```
-
-### Método: FIND ALL [Encontrar Todos]
-```
-http://127.0.0.1:8080/v1/api/students
 
 METHOD: POST
 REQUEST BODY: JSON API STUDENT ENTITY
@@ -46,6 +41,13 @@ JSON API STUDENT ENTITY
     "neighborhood": "Itaquera",
     "birthDate": "1990-05-11"
 }
+```
+
+### Método: FIND ALL [Encontrar Todos]
+```
+http://127.0.0.1:8080/v1/api/students
+
+METHOD: GET
 ```
 
 ### Método: FIND BY ID [ENCONTRAR ALUNO USANDO SEU ID]
