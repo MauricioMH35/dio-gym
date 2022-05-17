@@ -14,4 +14,5 @@ public interface IStudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByNameContains(String name);
     List<Student> findByNeighborhood(String neighborhood);
     List<Student> findByBirthDateBetween(LocalDate start, LocalDate end);
+    List<Student> findByRegistrationBetween(LocalDate start, LocalDate end);
 }
