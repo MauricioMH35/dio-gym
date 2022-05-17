@@ -1,9 +1,13 @@
 package dio.gym.services.impls;
 
+import dio.gym.entities.Student;
 import dio.gym.entities.transfers.StudentDTO;
+import dio.gym.handlers.ConflictException;
+import dio.gym.handlers.NotFoundException;
 import dio.gym.repositories.IStudentRepository;
 import dio.gym.services.IStudentService;
 import dio.gym.utils.PlaintextToCpf;
+import dio.gym.utils.StringToLocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -11,8 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,12 +25,12 @@ public class StudentService implements IStudentService {
 
     @Override
     public StudentDTO create(StudentDTO student) {
-        if (student == null) {
+        if (student == null)
             throw new RuntimeException("Error");
-        }
-        if (repository.findByCpf(student.getCpf()).isPresent()) {
-            throw new RuntimeException("Conflict");
-        }
+        if (repository.findByCpf(student.getCpf()).isPresent())
+            throw new ConflictException("Student already exists");
+
+        student.setRegistration(LocalDate.now());
         repository.save(student.parse());
         return student;
     }
@@ -69,9 +71,8 @@ public class StudentService implements IStudentService {
 
     @Override
     public Page<StudentDTO> findByBirthDateBetween(String start, String end) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate startDate = LocalDate.parse(start, formatter);
-        LocalDate endDate = LocalDate.parse(end, formatter);
+        LocalDate startDate = StringToLocalDate.parse(start);
+        LocalDate endDate = StringToLocalDate.parse(end);
 
         Page<StudentDTO> found = new PageImpl<>(
                 repository.findByBirthDateBetween(startDate, endDate).stream()
@@ -80,6 +81,24 @@ public class StudentService implements IStudentService {
         if (found.isEmpty()) {
             throw new RuntimeException("Not Found");
         }
+        return found;
+    }
+
+    @Override
+    public Page<StudentDTO> findByRegistrationBetween(String start, String end) {
+        LocalDate startDate = StringToLocalDate.parse(start);
+        LocalDate endDate = StringToLocalDate.parse(end);
+
+        Page<StudentDTO> found = new PageImpl<>(
+                repository.findByRegistrationBetween(startDate, endDate).stream()
+                        .map(s -> s.parse())
+                        .collect(Collectors.toList())
+        );
+
+        if (found.isEmpty()) {
+            throw new NotFoundException("Students find between registration "+start+" and "+end+" Not found");
+        }
+
         return found;
     }
 
@@ -115,7 +134,7 @@ public class StudentService implements IStudentService {
 
     @Override
     public String deleteById(Long id) {
-        findStudentById(id);
+        Student found = findStudentById(id).parse();
         repository.deleteById(id);
         return "Student successfully deleted";
     }

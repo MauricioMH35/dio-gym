@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -61,6 +60,16 @@ public class StudentController {
 
         return new ResponseEntity(
                 service.findByBirthDateBetween(start, end), HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/registration")
+    public ResponseEntity<Page<StudentDTO>> findByRegistrationBetween(@RequestParam Map<String, String> dates) {
+        String start = dates.get("start");
+        String end = dates.get("end");
+
+        return new ResponseEntity<>(
+                service.findByRegistrationBetween(start, end), HttpStatus.OK
         );
     }
 

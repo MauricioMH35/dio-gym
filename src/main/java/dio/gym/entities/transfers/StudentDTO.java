@@ -2,7 +2,9 @@ package dio.gym.entities.transfers;
 
 import dio.gym.entities.Assessment;
 import dio.gym.entities.Student;
+import dio.gym.utils.StringToLocalDate;
 import lombok.*;
+import org.apache.tomcat.jni.Local;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +26,7 @@ public class StudentDTO {
     private String cpf;
     private String neighborhood;
     private String birthDate;
+    private LocalDate registration;
     private List<Assessment> assessments;
 
     public Student parse() {
@@ -32,8 +35,9 @@ public class StudentDTO {
                 .name(this.name)
                 .cpf(this.cpf)
                 .neighborhood(this.neighborhood)
-                .birthDate(parseBirthDate())
-                .assessments(null)
+                .birthDate(StringToLocalDate.parse(this.birthDate))
+                .registration(this.registration)
+                .assessments(this.assessments)
                 .build();
     }
 
@@ -43,19 +47,10 @@ public class StudentDTO {
                 .name(target.name)
                 .cpf(target.cpf)
                 .neighborhood(target.neighborhood)
-                .birthDate(parseBirthDate(target.getBirthDate()))
-                .assessments(null)
+                .birthDate(StringToLocalDate.parse(target.getBirthDate()))
+                .registration(target.getRegistration())
+                .assessments(target.getAssessments())
                 .build();
-    }
-
-    private LocalDate parseBirthDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(this.birthDate, formatter);
-    }
-
-    private static LocalDate parseBirthDate(String target) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(target, formatter);
     }
 
 }

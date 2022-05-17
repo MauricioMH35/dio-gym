@@ -2,14 +2,13 @@ package dio.gym.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import dio.gym.entities.transfers.AssessmentDTO;
 import dio.gym.entities.transfers.StudentDTO;
+import dio.gym.utils.StringToLocalDate;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -38,6 +37,9 @@ public class Student {
     @Column(nullable = false)
     private LocalDate birthDate;
 
+    @Column(nullable = false)
+    private LocalDate registration;
+
     @JsonIgnore
     @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     private List<Assessment> assessments;
@@ -48,7 +50,8 @@ public class Student {
                 .name(this.name)
                 .cpf(this.cpf)
                 .neighborhood(this.neighborhood)
-                .birthDate(parseBirthDate())
+                .birthDate(StringToLocalDate.parse(this.birthDate))
+                .registration(this.registration)
                 .assessments(null)
                 .build();
     }
@@ -59,17 +62,10 @@ public class Student {
                 .name(target.name)
                 .cpf(target.cpf)
                 .neighborhood(target.neighborhood)
-                .birthDate(parseBirthDate(target.getBirthDate()))
+                .birthDate(StringToLocalDate.parse(target.birthDate))
+                .registration(target.registration)
                 .assessments(null)
                 .build();
-    }
-
-    private String parseBirthDate() {
-        return this.birthDate.toString();
-    }
-
-    private static String parseBirthDate(LocalDate target) {
-        return target.toString();
     }
 
 }

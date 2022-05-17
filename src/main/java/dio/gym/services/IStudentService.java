@@ -18,6 +18,7 @@ public interface IStudentService {
     Page<StudentDTO> findByNameContains(String name);
     Page<StudentDTO> findByNeighborhood(String neighborhood);
     Page<StudentDTO> findByBirthDateBetween(String start, String end);
+    Page<StudentDTO> findByRegistrationBetween(String start, String end);
     Page<StudentDTO> findAll();
 
     // Update
