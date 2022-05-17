@@ -22,4 +22,8 @@ public class StringToLocalDate {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
         return LocalDate.parse(target, formatter);
     }
+
+    public static String parse(LocalDate target) {
+        return target.toString();
+    }
 }
